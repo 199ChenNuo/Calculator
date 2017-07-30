@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>calculator test</title>
+    <script src="../Calculator/node_modules/mocha/mocha.js"></script>
+    <script src="../Calculator/node_modules/chai/chai.js"></script>
+
+    <script>
+
+
+        function parse(content){
+
+            // deal with "expression"
+            var index = content.lastIndexOf("(");
+            if(index > -1){
+                var endIndex = content.indexOf(")",index);
+                if(endIndex > -1){
+                    var result = parse(content.substring(index + 1,endIndex));
+                    return parse(content.substring(0,index) + result + content.substring(endIndex + 1));
+                }else{
+                    return "Error: ) expected!";
+                }
+            }
+
+            // deal with +
+            index = content.indexOf("+");
+            if(index > -1){
+                if(content.substring(index + 1) === "") {
+                    return "Error: bad token!";
+                }
+                else{
+                    var left = parse(content.substring(0, index));
+                    var right = parse(content.substring(index + 1));
+                    if(typeof(left) === 'string'){
+                        return left;
+                    }else if(typeof(right) === 'string'){
+                        return right;
+                    }else{
+                        return parse(content.substring(0,index)) + parse(content.substring(index + 1));
+                    }
+                }
+            }
+
+            index = content.lastIndexOf("-");
+            if(index > -1){
+                if(content.substring(index + 1) === ""){
+                    return "Error: bad token!";
+                }else{
+                    left = parse(content.substring(0, index));
+                    right = parse(content.substring(index + 1));
+                    if(typeof(left) === 'string'){
+                        return left;
+                    }else if(typeof(right) === 'string'){
+                        return right;
+                    }else{
+                        return left - right;
+                    }
+                }
+            }
+
+            index = content.lastIndexOf("*");
+            if(index > -1){
+                if(content.substring(index + 1) === ""){
+                    return "Error: bad token!";
+                }else {
+                    left = parse(content.substring(0, index));
+                    right = parse(content.substring(index + 1));
+                    if (typeof(left) === 'string') {
+                        return left;
+                    } else if (typeof(right) === 'string') {
+                        return right;
+                    } else {
+                        return left * right;
+                    }
+                }
+            }
+
+            index = content.lastIndexOf("/");
+            if(index > -1){
+                if(content.substring(index + 1) === ""){
+                    return "Error: bad token!";
+                }else {
+                    left = parse(content.substring(0, index));
+                    right = parse(content.substring(index + 1));
+                    if (typeof(left) === 'string') {
+                        return left;
+                    } else if (typeof(right) === 'string') {
+                        return right;
+                    } else {
+                        if(right === 0){
+                            return 'Error: divided by zero!';
+                        }else{
+                            return left / right;
+                        }
+                    }
+                }
+            }
+
+            index = content.lastIndexOf('%');
+            if(index > -1){
+                if(content.substring(index + 1) === ""){
+                    return "Error: bad token!";
+                }else {
+                    left = parse(content.substring(0, index));
+                    right = parse(content.substring(index + 1));
+                    if (typeof(left) === 'string') {
+                        return left;
+                    } else if (typeof(right) === 'string') {
+                        return right;
+                    } else {
+                        if(right === 0){
+                            return 'Error: divided by zero!';
+                        }else{
+                            return left % right;
+                        }
+                    }
+                }
+            }
+
+            if("" === content){
+                return 0;
+            }else{
+                return content - 1 + 1;
+            }
+        }
+
+    </script>
+</head>
+
+<body>
+    <div id="mocha"><p>Index</p></div>
+    <div id="message"></div>
+    <div id="fixtures"></div>
+    <script src="node_modules/mocha/mocha.js"></script>
+    <script src="node_modules/chai/chai.js"></script>
+    <script>mocha.setup("bdd")</script>
+
+    <script src="../Calculator/Calculator unit test.js"></script>
+
+    <script>mocha.run()</script>
+</body>
+
+</html>
